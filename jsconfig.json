@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",         // ✅ 這句代表 @ 對應 src/
+    "paths": {
+      "@/*": ["*"]
+    }
+  }
+}
