@@ -48,7 +48,7 @@ function Game1() {
     const containerRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])();
     const image2Ref = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])();
     const [scale, setScale] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(1);
-    const [localXs, setLocalXs] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
+    const [localXs, setLocalXs] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]); // 用來儲存 O 和 X 的標記
     const { errorCount, incrementError } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$ErrorContext$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useError"])();
     const debug = false;
     // 畫面縮放與置中
@@ -77,10 +77,33 @@ function Game1() {
     }, [
         errorCount
     ]);
+    // 正確點擊處理
     const handleCorrectClick = (e)=>{
         e.stopPropagation();
-        router.push('/game/game2');
+        // 在正確區域顯示 O 圖片
+        const id = Date.now(); // 使用時間戳作為唯一 ID
+        const clickX = e.clientX;
+        const clickY = e.clientY;
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const x = (clickX - containerRect.left) / scale;
+        const y = (clickY - containerRect.top) / scale;
+        // 將 O 圖片加入到標記中
+        setLocalXs((prev)=>[
+                ...prev,
+                {
+                    id,
+                    x,
+                    y,
+                    type: 'O'
+                }
+            ]);
+        // 停留一段時間後跳轉
+        setTimeout(()=>{
+            setLocalXs((prev)=>prev.filter((mark)=>mark.id !== id)); // 清除 O 圖片
+            router.push('/game/game2'); // 跳轉頁面
+        }, 800); // 停留時間設為 1500 毫秒（1.5 秒）
     };
+    // 錯誤點擊處理
     const handleWrongClick = (e)=>{
         if (!image2Ref.current) return;
         const imageRect = image2Ref.current.getBoundingClientRect();
@@ -96,7 +119,8 @@ function Game1() {
                     {
                         id,
                         x,
-                        y
+                        y,
+                        type: 'X'
                     }
                 ]);
             // 自動清除 0.8 秒後 ❌
@@ -136,7 +160,7 @@ function Game1() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game1/page.js",
-                    lineNumber: 98,
+                    lineNumber: 116,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -152,7 +176,7 @@ function Game1() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game1/page.js",
-                    lineNumber: 111,
+                    lineNumber: 129,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -170,7 +194,7 @@ function Game1() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game1/page.js",
-                    lineNumber: 123,
+                    lineNumber: 141,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -188,12 +212,12 @@ function Game1() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game1/page.js",
-                    lineNumber: 138,
+                    lineNumber: 156,
                     columnNumber: 9
                 }, this),
-                localXs.map(({ id, x, y })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
-                        src: "/photo/X.png",
-                        alt: "X",
+                localXs.map(({ id, x, y, type })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                        src: type === 'X' ? '/photo/X.png' : '/photo/O.png',
+                        alt: type,
                         className: "absolute pointer-events-none",
                         style: {
                             top: `${y}px`,
@@ -205,18 +229,18 @@ function Game1() {
                         }
                     }, id, false, {
                         fileName: "[project]/src/app/game/game1/page.js",
-                        lineNumber: 155,
+                        lineNumber: 173,
                         columnNumber: 11
                     }, this))
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/game/game1/page.js",
-            lineNumber: 87,
+            lineNumber: 105,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/game/game1/page.js",
-        lineNumber: 82,
+        lineNumber: 100,
         columnNumber: 5
     }, this);
 }

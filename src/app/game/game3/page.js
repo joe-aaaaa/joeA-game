@@ -12,7 +12,8 @@ export default function Game3() {
   const image2Ref = useRef();
 
   const [scale, setScale] = useState(1);
-  const [localXs, setLocalXs] = useState([]);
+  const [localXs, setLocalXs] = useState([]); // 只顯示本關的 ❌
+  const [localOs, setLocalOs] = useState([]); // 用來儲存 O 的標記
   const { errorCount, incrementError } = useError();
   const debug = false;
 
@@ -25,7 +26,6 @@ export default function Game3() {
       const newScale = Math.min(scaleX, scaleY);
       const offsetX = (window.innerWidth - BASE_WIDTH * newScale) / 2;
       const offsetY = (window.innerHeight - BASE_HEIGHT * newScale) / 2;
-
       container.style.transform = `scale(${newScale})`;
       container.style.left = `${offsetX}px`;
       container.style.top = `${offsetY}px`;
@@ -36,17 +36,33 @@ export default function Game3() {
     return () => window.removeEventListener('resize', resize);
   }, []);
 
-  // 三錯跳 BE
+  // 三次錯誤跳 BE
   useEffect(() => {
     if (errorCount >= 3) {
       router.push('/game/be');
     }
   }, [errorCount]);
 
-  // 正確點擊跳 HE
+  // 正確點擊處理
   const handleCorrectClick = (e) => {
     e.stopPropagation();
-    router.push('/game/he');
+
+    // 在正確區域顯示 O 圖片
+    const id = Date.now();  // 使用時間戳作為唯一 ID
+    const clickX = e.clientX;
+    const clickY = e.clientY;
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const x = (clickX - containerRect.left) / scale;
+    const y = (clickY - containerRect.top) / scale;
+
+    // 將 O 圖片加入到標記中
+    setLocalOs((prev) => [...prev, { id, x, y }]);
+
+    // 停留 800 毫秒後跳轉
+    setTimeout(() => {
+      setLocalOs((prev) => prev.filter((mark) => mark.id !== id));  // 清除 O 圖片
+      router.push('/game/he');  // 跳轉頁面
+    }, 800);  // 停留時間設為 800 毫秒
   };
 
   // 錯誤點擊處理
@@ -70,6 +86,7 @@ export default function Game3() {
       const id = Date.now();
       setLocalXs((prev) => [...prev, { id, x, y }]);
 
+      // 自動移除 ❌
       setTimeout(() => {
         setLocalXs((prev) => prev.filter((mark) => mark.id !== id));
       }, 800);
@@ -137,6 +154,24 @@ export default function Game3() {
             key={id}
             src="/photo/X.png"
             alt="X"
+            className="absolute pointer-events-none"
+            style={{
+              top: `${y}px`,
+              left: `${x}px`,
+              transform: 'translate(-50%, -50%)',
+              width: '120px',
+              height: 'auto',
+              zIndex: 999,
+            }}
+          />
+        ))}
+
+        {/* 顯示 O 圖片（停留 800 毫秒後移除） */}
+        {localOs.map(({ id, x, y }) => (
+          <img
+            key={id}
+            src="/photo/O.png"
+            alt="O"
             className="absolute pointer-events-none"
             style={{
               top: `${y}px`,

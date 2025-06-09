@@ -48,7 +48,8 @@ function Game3() {
     const containerRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])();
     const image2Ref = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])();
     const [scale, setScale] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(1);
-    const [localXs, setLocalXs] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
+    const [localXs, setLocalXs] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]); // 只顯示本關的 ❌
+    const [localOs, setLocalOs] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]); // 用來儲存 O 的標記
     const { errorCount, incrementError } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$ErrorContext$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useError"])();
     const debug = false;
     // 畫面縮放與置中
@@ -69,7 +70,7 @@ function Game3() {
         window.addEventListener('resize', resize);
         return ()=>window.removeEventListener('resize', resize);
     }, []);
-    // 三錯跳 BE
+    // 三次錯誤跳 BE
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         if (errorCount >= 3) {
             router.push('/game/be');
@@ -77,10 +78,30 @@ function Game3() {
     }, [
         errorCount
     ]);
-    // 正確點擊跳 HE
+    // 正確點擊處理
     const handleCorrectClick = (e)=>{
         e.stopPropagation();
-        router.push('/game/he');
+        // 在正確區域顯示 O 圖片
+        const id = Date.now(); // 使用時間戳作為唯一 ID
+        const clickX = e.clientX;
+        const clickY = e.clientY;
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const x = (clickX - containerRect.left) / scale;
+        const y = (clickY - containerRect.top) / scale;
+        // 將 O 圖片加入到標記中
+        setLocalOs((prev)=>[
+                ...prev,
+                {
+                    id,
+                    x,
+                    y
+                }
+            ]);
+        // 停留 800 毫秒後跳轉
+        setTimeout(()=>{
+            setLocalOs((prev)=>prev.filter((mark)=>mark.id !== id)); // 清除 O 圖片
+            router.push('/game/he'); // 跳轉頁面
+        }, 800); // 停留時間設為 800 毫秒
     };
     // 錯誤點擊處理
     const handleWrongClick = (e)=>{
@@ -101,6 +122,7 @@ function Game3() {
                         y
                     }
                 ]);
+            // 自動移除 ❌
             setTimeout(()=>{
                 setLocalXs((prev)=>prev.filter((mark)=>mark.id !== id));
             }, 800);
@@ -139,7 +161,7 @@ function Game3() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game3/page.js",
-                    lineNumber: 99,
+                    lineNumber: 116,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -154,7 +176,7 @@ function Game3() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game3/page.js",
-                    lineNumber: 106,
+                    lineNumber: 123,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -171,7 +193,7 @@ function Game3() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game3/page.js",
-                    lineNumber: 111,
+                    lineNumber: 128,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -189,7 +211,7 @@ function Game3() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game3/page.js",
-                    lineNumber: 119,
+                    lineNumber: 136,
                     columnNumber: 9
                 }, this),
                 localXs.map(({ id, x, y })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -206,18 +228,35 @@ function Game3() {
                         }
                     }, id, false, {
                         fileName: "[project]/src/app/game/game3/page.js",
-                        lineNumber: 136,
+                        lineNumber: 153,
+                        columnNumber: 11
+                    }, this)),
+                localOs.map(({ id, x, y })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                        src: "/photo/O.png",
+                        alt: "O",
+                        className: "absolute pointer-events-none",
+                        style: {
+                            top: `${y}px`,
+                            left: `${x}px`,
+                            transform: 'translate(-50%, -50%)',
+                            width: '120px',
+                            height: 'auto',
+                            zIndex: 999
+                        }
+                    }, id, false, {
+                        fileName: "[project]/src/app/game/game3/page.js",
+                        lineNumber: 171,
                         columnNumber: 11
                     }, this))
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/game/game3/page.js",
-            lineNumber: 87,
+            lineNumber: 104,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/game/game3/page.js",
-        lineNumber: 82,
+        lineNumber: 99,
         columnNumber: 5
     }, this);
 }

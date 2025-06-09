@@ -12,7 +12,7 @@ export default function Game1() {
   const image2Ref = useRef();
 
   const [scale, setScale] = useState(1);
-  const [localXs, setLocalXs] = useState([]);
+  const [localXs, setLocalXs] = useState([]);  // 用來儲存 O 和 X 的標記
   const { errorCount, incrementError } = useError();
   const debug = false;
 
@@ -44,11 +44,29 @@ export default function Game1() {
     }
   }, [errorCount]);
 
+  // 正確點擊處理
   const handleCorrectClick = (e) => {
     e.stopPropagation();
-    router.push('/game/game2');
+
+    // 在正確區域顯示 O 圖片
+    const id = Date.now();  // 使用時間戳作為唯一 ID
+    const clickX = e.clientX;
+    const clickY = e.clientY;
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const x = (clickX - containerRect.left) / scale;
+    const y = (clickY - containerRect.top) / scale;
+
+    // 將 O 圖片加入到標記中
+    setLocalXs((prev) => [...prev, { id, x, y, type: 'O' }]);
+
+    // 停留一段時間後跳轉
+    setTimeout(() => {
+      setLocalXs((prev) => prev.filter((mark) => mark.id !== id));  // 清除 O 圖片
+      router.push('/game/game2');  // 跳轉頁面
+    }, 800);  // 停留時間設為 1500 毫秒（1.5 秒）
   };
 
+  // 錯誤點擊處理
   const handleWrongClick = (e) => {
     if (!image2Ref.current) return;
 
@@ -67,7 +85,7 @@ export default function Game1() {
       const y = (clickY - containerRect.top) / scale;
 
       const id = Date.now();
-      setLocalXs((prev) => [...prev, { id, x, y }]);
+      setLocalXs((prev) => [...prev, { id, x, y, type: 'X' }]);
 
       // 自動清除 0.8 秒後 ❌
       setTimeout(() => {
@@ -150,12 +168,12 @@ export default function Game1() {
           }}
         />
 
-        {/* 即時 ❌，出現在點擊處並自動消失 */}
-        {localXs.map(({ id, x, y }) => (
+        {/* 即時 O 和 X 標記，會在點擊處顯示並自動消失 */}
+        {localXs.map(({ id, x, y, type }) => (
           <img
             key={id}
-            src="/photo/X.png"
-            alt="X"
+            src={type === 'X' ? '/photo/X.png' : '/photo/O.png'}  // 根據類型顯示 O 或 X
+            alt={type}
             className="absolute pointer-events-none"
             style={{
               top: `${y}px`,

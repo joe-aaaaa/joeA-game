@@ -13,7 +13,8 @@ export default function Game2() {
 
   const [scale, setScale] = useState(1);
   const [localXs, setLocalXs] = useState([]); // 只顯示本關的 ❌
-  const { errorCount, incrementError, errorMarks } = useError();
+  const [localOs, setLocalOs] = useState([]); // 用來儲存 O 的標記
+  const { errorCount, incrementError } = useError();
   const debug = false;
 
   // 畫面縮放與置中
@@ -42,10 +43,26 @@ export default function Game2() {
     }
   }, [errorCount]);
 
-  // 點到正確就進入下一關
+  // 正確點擊處理
   const handleCorrectClick = (e) => {
     e.stopPropagation();
-    router.push('/game/game3');
+
+    // 在正確區域顯示 O 圖片
+    const id = Date.now();  // 使用時間戳作為唯一 ID
+    const clickX = e.clientX;
+    const clickY = e.clientY;
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const x = (clickX - containerRect.left) / scale;
+    const y = (clickY - containerRect.top) / scale;
+
+    // 將 O 圖片加入到標記中
+    setLocalOs((prev) => [...prev, { id, x, y }]);
+
+    // 停留 800 毫秒後跳轉
+    setTimeout(() => {
+      setLocalOs((prev) => prev.filter((mark) => mark.id !== id));  // 清除 O 圖片
+      router.push('/game/game3');  // 跳轉頁面
+    }, 800);  // 停留時間設為 800 毫秒
   };
 
   // 錯誤點擊處理
@@ -74,7 +91,7 @@ export default function Game2() {
         setLocalXs((prev) => prev.filter((mark) => mark.id !== id));
       }, 800);
 
-      incrementError({ x, y });
+      incrementError();
     }
   };
 
@@ -129,12 +146,30 @@ export default function Game2() {
           }}
         />
 
-        {/* 即時 ❌ 顯示（短暫） */}
+        {/* 即時 O 和 X 標記顯示（短暫） */}
         {localXs.map(({ id, x, y }) => (
           <img
             key={id}
             src="/photo/X.png"
             alt="X"
+            className="absolute pointer-events-none"
+            style={{
+              top: `${y}px`,
+              left: `${x}px`,
+              transform: 'translate(-50%, -50%)',
+              width: '120px',
+              height: 'auto',
+              zIndex: 999,
+            }}
+          />
+        ))}
+
+        {/* 顯示 O 圖片（停留 800 毫秒後移除） */}
+        {localOs.map(({ id, x, y }) => (
+          <img
+            key={id}
+            src="/photo/O.png"
+            alt="O"
             className="absolute pointer-events-none"
             style={{
               top: `${y}px`,

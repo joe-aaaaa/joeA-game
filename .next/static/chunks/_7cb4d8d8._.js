@@ -27,7 +27,8 @@ function Game2() {
     const image2Ref = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])();
     const [scale, setScale] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(1);
     const [localXs, setLocalXs] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]); // 只顯示本關的 ❌
-    const { errorCount, incrementError, errorMarks } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$ErrorContext$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useError"])();
+    const [localOs, setLocalOs] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]); // 用來儲存 O 的標記
+    const { errorCount, incrementError } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$ErrorContext$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useError"])();
     const debug = false;
     // 畫面縮放與置中
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
@@ -63,10 +64,30 @@ function Game2() {
     }["Game2.useEffect"], [
         errorCount
     ]);
-    // 點到正確就進入下一關
+    // 正確點擊處理
     const handleCorrectClick = (e)=>{
         e.stopPropagation();
-        router.push('/game/game3');
+        // 在正確區域顯示 O 圖片
+        const id = Date.now(); // 使用時間戳作為唯一 ID
+        const clickX = e.clientX;
+        const clickY = e.clientY;
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const x = (clickX - containerRect.left) / scale;
+        const y = (clickY - containerRect.top) / scale;
+        // 將 O 圖片加入到標記中
+        setLocalOs((prev)=>[
+                ...prev,
+                {
+                    id,
+                    x,
+                    y
+                }
+            ]);
+        // 停留 800 毫秒後跳轉
+        setTimeout(()=>{
+            setLocalOs((prev)=>prev.filter((mark)=>mark.id !== id)); // 清除 O 圖片
+            router.push('/game/game3'); // 跳轉頁面
+        }, 800); // 停留時間設為 800 毫秒
     };
     // 錯誤點擊處理
     const handleWrongClick = (e)=>{
@@ -91,10 +112,7 @@ function Game2() {
             setTimeout(()=>{
                 setLocalXs((prev)=>prev.filter((mark)=>mark.id !== id));
             }, 800);
-            incrementError({
-                x,
-                y
-            });
+            incrementError();
         }
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -126,7 +144,7 @@ function Game2() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game2/page.js",
-                    lineNumber: 99,
+                    lineNumber: 116,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -141,7 +159,7 @@ function Game2() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game2/page.js",
-                    lineNumber: 104,
+                    lineNumber: 121,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -158,7 +176,7 @@ function Game2() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game2/page.js",
-                    lineNumber: 109,
+                    lineNumber: 126,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -176,7 +194,7 @@ function Game2() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game2/page.js",
-                    lineNumber: 117,
+                    lineNumber: 134,
                     columnNumber: 9
                 }, this),
                 localXs.map(({ id, x, y })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -193,22 +211,39 @@ function Game2() {
                         }
                     }, id, false, {
                         fileName: "[project]/src/app/game/game2/page.js",
-                        lineNumber: 134,
+                        lineNumber: 151,
+                        columnNumber: 11
+                    }, this)),
+                localOs.map(({ id, x, y })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                        src: "/photo/O.png",
+                        alt: "O",
+                        className: "absolute pointer-events-none",
+                        style: {
+                            top: `${y}px`,
+                            left: `${x}px`,
+                            transform: 'translate(-50%, -50%)',
+                            width: '120px',
+                            height: 'auto',
+                            zIndex: 999
+                        }
+                    }, id, false, {
+                        fileName: "[project]/src/app/game/game2/page.js",
+                        lineNumber: 169,
                         columnNumber: 11
                     }, this))
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/game/game2/page.js",
-            lineNumber: 87,
+            lineNumber: 104,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/game/game2/page.js",
-        lineNumber: 82,
+        lineNumber: 99,
         columnNumber: 5
     }, this);
 }
-_s(Game2, "QYeIrLA5xgMmGanAVhcAP3RJJ+A=", false, function() {
+_s(Game2, "PaF3wUrAAjrEflDsZer0nKc0wLc=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$contexts$2f$ErrorContext$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useError"]

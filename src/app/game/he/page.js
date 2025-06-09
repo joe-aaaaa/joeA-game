@@ -203,37 +203,37 @@ export default function HomePage() {
         </div>
 
         {/* Home 按鈕 */}
-        <div
-          className="scale-in hover-scale"
-          style={{
-            position: 'absolute',
-            bottom: 300,
-            left: 630,
-            height: '200px',
-            width: 'fit-content',
-            cursor: 'pointer',
-            zIndex: 10,
-            animationDelay: '1s',
-            animationFillMode: 'forwards',
-            animationDuration: '0.4s',
-            animationTimingFunction: 'ease-out',
-            opacity: 0,
-            transform: 'scale(0)',
-          }}
-          onClick={() => router.push('/home')}
-        >
-          <a href="https://classroomdaydream.vercel.app" target="_blank" rel="noopener noreferrer">
-            <img
-              src="/photo/homePage.png"
-              alt="Home"
-              style={{
-                height: '180px',
-                width: 'auto',
-                display: 'block',
-              }}
-            />
-          </a>
-        </div>
+<div
+  className="scale-in hover-scale"
+  style={{
+    position: 'absolute',
+    bottom: 300,
+    left: 630,
+    height: '200px',
+    width: 'fit-content',
+    cursor: 'pointer',
+    zIndex: 10,
+    animationDelay: '1s',
+    animationFillMode: 'forwards',
+    animationDuration: '0.4s',
+    animationTimingFunction: 'ease-out',
+    opacity: 0,
+    transform: 'scale(0)',
+  }}
+  onClick={() => window.location.href = 'https://classroomdaydream.vercel.app'}
+>
+  <img
+    src="/photo/homePage.png"
+    alt="Home"
+    style={{
+      height: '180px',
+      width: 'auto',
+      display: 'block',
+    }}
+  />
+</div>
+
+
       </div>
     </div>
   );
