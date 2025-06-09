@@ -192,7 +192,7 @@ export default function HomePage() {
           }}
         >
           <img
-            src="/photo/playagain.png"
+            src="/photo/playAgain.png"
             alt="Play Again"
             style={{
               height: '180px',
