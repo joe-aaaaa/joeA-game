@@ -17,6 +17,12 @@ export default function Game2() {
   const { errorCount, incrementError } = useError();
   const debug = false;
 
+  // 播放音效
+  const playSound = (sound) => {
+    const audio = new Audio(`/${sound}.mp3`);
+    audio.play();
+  };
+
   // 畫面縮放與置中
   useEffect(() => {
     const resize = () => {
@@ -47,22 +53,21 @@ export default function Game2() {
   const handleCorrectClick = (e) => {
     e.stopPropagation();
 
-    // 在正確區域顯示 O 圖片
-    const id = Date.now();  // 使用時間戳作為唯一 ID
+    const id = Date.now();
     const clickX = e.clientX;
     const clickY = e.clientY;
     const containerRect = containerRef.current.getBoundingClientRect();
     const x = (clickX - containerRect.left) / scale;
     const y = (clickY - containerRect.top) / scale;
 
-    // 將 O 圖片加入到標記中
     setLocalOs((prev) => [...prev, { id, x, y }]);
 
-    // 停留 800 毫秒後跳轉
+    playSound('correct');
+
     setTimeout(() => {
-      setLocalOs((prev) => prev.filter((mark) => mark.id !== id));  // 清除 O 圖片
-      router.push('/game/game3');  // 跳轉頁面
-    }, 800);  // 停留時間設為 800 毫秒
+      setLocalOs((prev) => prev.filter((mark) => mark.id !== id));
+      router.push('/game/game3');
+    }, 800);
   };
 
   // 錯誤點擊處理
@@ -86,7 +91,8 @@ export default function Game2() {
       const id = Date.now();
       setLocalXs((prev) => [...prev, { id, x, y }]);
 
-      // 自動移除 ❌
+      playSound('error');
+
       setTimeout(() => {
         setLocalXs((prev) => prev.filter((mark) => mark.id !== id));
       }, 800);
@@ -146,7 +152,7 @@ export default function Game2() {
           }}
         />
 
-        {/* 即時 O 和 X 標記顯示（短暫） */}
+        {/* 錯誤標記 */}
         {localXs.map(({ id, x, y }) => (
           <img
             key={id}
@@ -164,7 +170,7 @@ export default function Game2() {
           />
         ))}
 
-        {/* 顯示 O 圖片（停留 800 毫秒後移除） */}
+        {/* 正確標記 */}
         {localOs.map(({ id, x, y }) => (
           <img
             key={id}

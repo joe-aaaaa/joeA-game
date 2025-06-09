@@ -77,6 +77,11 @@ function Game1() {
     }, [
         errorCount
     ]);
+    // 播放音效
+    const playSound = (sound)=>{
+        const audio = new Audio(`/${sound}.mp3`); // 直接使用 `/` 路徑載入音效
+        audio.play();
+    };
     // 正確點擊處理
     const handleCorrectClick = (e)=>{
         e.stopPropagation();
@@ -97,11 +102,13 @@ function Game1() {
                     type: 'O'
                 }
             ]);
+        // 播放正確音效
+        playSound('correct');
         // 停留一段時間後跳轉
         setTimeout(()=>{
             setLocalXs((prev)=>prev.filter((mark)=>mark.id !== id)); // 清除 O 圖片
             router.push('/game/game2'); // 跳轉頁面
-        }, 800); // 停留時間設為 1500 毫秒（1.5 秒）
+        }, 800); // 停留時間設為 800 毫秒
     };
     // 錯誤點擊處理
     const handleWrongClick = (e)=>{
@@ -123,6 +130,8 @@ function Game1() {
                         type: 'X'
                     }
                 ]);
+            // 播放錯誤音效
+            playSound('error');
             // 自動清除 0.8 秒後 ❌
             setTimeout(()=>{
                 setLocalXs((prev)=>prev.filter((mark)=>mark.id !== id));
@@ -160,7 +169,7 @@ function Game1() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game1/page.js",
-                    lineNumber: 116,
+                    lineNumber: 128,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -176,7 +185,7 @@ function Game1() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game1/page.js",
-                    lineNumber: 129,
+                    lineNumber: 141,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -194,7 +203,7 @@ function Game1() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game1/page.js",
-                    lineNumber: 141,
+                    lineNumber: 153,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -212,7 +221,7 @@ function Game1() {
                     }
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/game1/page.js",
-                    lineNumber: 156,
+                    lineNumber: 168,
                     columnNumber: 9
                 }, this),
                 localXs.map(({ id, x, y, type })=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -229,18 +238,18 @@ function Game1() {
                         }
                     }, id, false, {
                         fileName: "[project]/src/app/game/game1/page.js",
-                        lineNumber: 173,
+                        lineNumber: 185,
                         columnNumber: 11
                     }, this))
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/game/game1/page.js",
-            lineNumber: 105,
+            lineNumber: 117,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/game/game1/page.js",
-        lineNumber: 100,
+        lineNumber: 112,
         columnNumber: 5
     }, this);
 }

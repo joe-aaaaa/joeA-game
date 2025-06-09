@@ -212,10 +212,6 @@
     pointer-events: none;
   }
 
-  .visible {
-    visibility: visible;
-  }
-
   .absolute {
     position: absolute;
   }

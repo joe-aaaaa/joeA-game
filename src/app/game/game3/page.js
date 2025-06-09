@@ -12,12 +12,17 @@ export default function Game3() {
   const image2Ref = useRef();
 
   const [scale, setScale] = useState(1);
-  const [localXs, setLocalXs] = useState([]); // 只顯示本關的 ❌
-  const [localOs, setLocalOs] = useState([]); // 用來儲存 O 的標記
+  const [localXs, setLocalXs] = useState([]);
+  const [localOs, setLocalOs] = useState([]);
   const { errorCount, incrementError } = useError();
   const debug = false;
 
-  // 畫面縮放與置中
+  // 播放音效
+  const playSound = (sound) => {
+    const audio = new Audio(`/${sound}.mp3`);
+    audio.play();
+  };
+
   useEffect(() => {
     const resize = () => {
       const container = containerRef.current;
@@ -36,36 +41,32 @@ export default function Game3() {
     return () => window.removeEventListener('resize', resize);
   }, []);
 
-  // 三次錯誤跳 BE
   useEffect(() => {
     if (errorCount >= 3) {
       router.push('/game/be');
     }
   }, [errorCount]);
 
-  // 正確點擊處理
   const handleCorrectClick = (e) => {
     e.stopPropagation();
 
-    // 在正確區域顯示 O 圖片
-    const id = Date.now();  // 使用時間戳作為唯一 ID
+    const id = Date.now();
     const clickX = e.clientX;
     const clickY = e.clientY;
     const containerRect = containerRef.current.getBoundingClientRect();
     const x = (clickX - containerRect.left) / scale;
     const y = (clickY - containerRect.top) / scale;
 
-    // 將 O 圖片加入到標記中
     setLocalOs((prev) => [...prev, { id, x, y }]);
 
-    // 停留 800 毫秒後跳轉
+    playSound('correct');
+
     setTimeout(() => {
-      setLocalOs((prev) => prev.filter((mark) => mark.id !== id));  // 清除 O 圖片
-      router.push('/game/he');  // 跳轉頁面
-    }, 800);  // 停留時間設為 800 毫秒
+      setLocalOs((prev) => prev.filter((mark) => mark.id !== id));
+      router.push('/game/he');
+    }, 800);
   };
 
-  // 錯誤點擊處理
   const handleWrongClick = (e) => {
     if (!image2Ref.current) return;
 
@@ -86,7 +87,8 @@ export default function Game3() {
       const id = Date.now();
       setLocalXs((prev) => [...prev, { id, x, y }]);
 
-      // 自動移除 ❌
+      playSound('error');
+
       setTimeout(() => {
         setLocalXs((prev) => prev.filter((mark) => mark.id !== id));
       }, 800);
@@ -112,14 +114,11 @@ export default function Game3() {
           overflow: 'hidden',
         }}
       >
-        {/* 背景圖 */}
         <img
           src="/photo/bg2.png"
           className="absolute"
           style={{ top: '-17%', left: '-45%', width: '100%', height: 'auto', zIndex: 0 }}
         />
-
-        {/* 裝飾圖 */}
         <img
           src="/photo/3-1.png"
           className="absolute"
@@ -132,7 +131,6 @@ export default function Game3() {
           style={{ top: '0%', right: '4%', width: 'auto', height: '100%', zIndex: 1, cursor: 'pointer' }}
         />
 
-        {/* 正確點擊區 */}
         <div
           onClick={handleCorrectClick}
           style={{
@@ -148,7 +146,6 @@ export default function Game3() {
           }}
         />
 
-        {/* 即時 ❌ 顯示（短暫） */}
         {localXs.map(({ id, x, y }) => (
           <img
             key={id}
@@ -166,7 +163,6 @@ export default function Game3() {
           />
         ))}
 
-        {/* 顯示 O 圖片（停留 800 毫秒後移除） */}
         {localOs.map(({ id, x, y }) => (
           <img
             key={id}

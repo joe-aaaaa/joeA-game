@@ -281,12 +281,12 @@ function HomePage() {
                     }, void 0, false, {
                         fileName: "[project]/src/app/game/he/page.js",
                         lineNumber: 225,
-                        columnNumber: 3
+                        columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/game/he/page.js",
                     lineNumber: 206,
-                    columnNumber: 1
+                    columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {

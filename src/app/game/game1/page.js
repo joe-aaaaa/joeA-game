@@ -44,6 +44,12 @@ export default function Game1() {
     }
   }, [errorCount]);
 
+  // 播放音效
+  const playSound = (sound) => {
+    const audio = new Audio(`/${sound}.mp3`);  // 直接使用 `/` 路徑載入音效
+    audio.play();
+  };
+
   // 正確點擊處理
   const handleCorrectClick = (e) => {
     e.stopPropagation();
@@ -59,11 +65,14 @@ export default function Game1() {
     // 將 O 圖片加入到標記中
     setLocalXs((prev) => [...prev, { id, x, y, type: 'O' }]);
 
+    // 播放正確音效
+    playSound('correct');
+
     // 停留一段時間後跳轉
     setTimeout(() => {
       setLocalXs((prev) => prev.filter((mark) => mark.id !== id));  // 清除 O 圖片
       router.push('/game/game2');  // 跳轉頁面
-    }, 800);  // 停留時間設為 1500 毫秒（1.5 秒）
+    }, 800);  // 停留時間設為 800 毫秒
   };
 
   // 錯誤點擊處理
@@ -86,6 +95,9 @@ export default function Game1() {
 
       const id = Date.now();
       setLocalXs((prev) => [...prev, { id, x, y, type: 'X' }]);
+
+      // 播放錯誤音效
+      playSound('error');
 
       // 自動清除 0.8 秒後 ❌
       setTimeout(() => {
