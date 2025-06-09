@@ -222,15 +222,17 @@ export default function HomePage() {
           }}
           onClick={() => router.push('/home')}
         >
-          <img
-            src="/photo/homePage.png"
-            alt="Home"
-            style={{
-              height: '180px',
-              width: 'auto',
-              display: 'block',
-            }}
-          />
+          <a href="https://classroomdaydream.vercel.app" target="_blank" rel="noopener noreferrer">
+            <img
+              src="/photo/homePage.png"
+              alt="Home"
+              style={{
+                height: '180px',
+                width: 'auto',
+                display: 'block',
+              }}
+            />
+          </a>
         </div>
       </div>
     </div>
